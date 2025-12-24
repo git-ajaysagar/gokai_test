@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function startWildFor(el){
     if(!el || wildHandles.has(el)) return
     el.classList.add('wild')
-    // use smoother, slower transitions so they're clickable
-    el.style.transition = 'left 360ms cubic-bezier(.2,.9,.2,1), top 360ms cubic-bezier(.2,.9,.2,1)'
+    // rapid movement to make them elusive
+    el.style.transition = 'left 160ms ease-out, top 160ms ease-out'
 
     const interval = setInterval(()=>{
       // only move if element still in DOM
@@ -67,13 +67,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
       // localize movement: pick a nearby target instead of teleporting across whole stage
       const curX = Math.round(elRect.left - stageRect.left)
       const curY = Math.round(elRect.top - stageRect.top)
-      const step = 120 // max px to move per step
+      const step = Math.min(140, stageRect.width * 0.35) // responsive steps
       const nx = Math.min(maxX, Math.max(0, Math.floor(curX + rand(-step, step))))
       const ny = Math.min(maxY, Math.max(0, Math.floor(curY + rand(-step, step))))
 
       el.style.left = nx + 'px'
       el.style.top = ny + 'px'
-    }, 420 + Math.floor(Math.random()*220))
+    }, 360) // 160ms transition + 300ms wait
 
     wildHandles.set(el, interval)
   }
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function enableWildMode(enabled){
     const remaining = Math.max(0, totalEmojis - poppedCount)
     if(enabled){
-      const cand = Array.from(stage.querySelectorAll('.emoji:not(.pop)'))
+      const cand = Array.from(stage.querySelectorAll('.emoji:not(.pop):not(.popping)'))
       // take up to two elements (prefer largest visible ones)
       const targets = cand.slice(0,2)
       for(const el of targets) startWildFor(el)
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function checkWild(){
     const remaining = Math.max(0, totalEmojis - poppedCount)
-    if(remaining === 2){
+    if(remaining <= 2 && remaining > 0){
       enableWildMode(true)
     }else{
       enableWildMode(false)
@@ -121,10 +121,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function showCongrats(){
     const tab = document.getElementById('congratsTab')
     if(!tab) return
+    
+    // Replace content with "Bhai Waah...." and a Refresh button
+    const inner = tab.querySelector('.congrats-inner')
+    if(inner){
+      inner.innerHTML = `
+        <div class="congrats-msg">Waah! Bahut Tej Hai Tu..</div>
+        <button class="refresh-btn" onclick="location.reload()">Refresh</button>
+      `
+    }
+
     tab.setAttribute('aria-hidden','false')
     tab.classList.add('show')
-    const btn = document.getElementById('congratsClose')
-    if(btn) btn.addEventListener('click', ()=>{ tab.classList.remove('show'); tab.setAttribute('aria-hidden','true') })
   }
 
   // create a lightweight WebAudio pop generator (no external files)
@@ -208,7 +216,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
       const el = document.createElement('span')
       el.className = 'emoji'
       el.textContent = emojis[Math.floor(Math.random()*emojis.length)]
-      const size = Math.floor(rand(28,96))
+      // on mobile, ensure min size is tappable (42px+) but max isn't too huge
+      const isMobile = window.innerWidth < 500
+      const size = Math.floor(rand(isMobile?42:28, isMobile?80:96))
       el.style.fontSize = size+'px'
       el.style.opacity = rand(0.8,1)
       el.style.setProperty('--dur', (rand(0.9,2.2)).toFixed(2)+'s')
@@ -268,6 +278,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
       }
 
       el.addEventListener('click', (ev)=>{
+        if(el.classList.contains('popping')) return
+        el.classList.add('popping')
+
         // increment counters immediately for responsive UI
         poppedCount = Math.min(totalEmojis, poppedCount + 1)
         updateCounter()
@@ -289,6 +302,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
+  // spawn initial batch
   spawn(22)
 
   // click anywhere to add more
@@ -300,4 +314,3 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 // --- change background hue every 2 seconds with smooth CSS transition ---
 /* background is now fixed beige; removed hue-changing interval */
-

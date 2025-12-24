@@ -17,6 +17,8 @@ body{
   margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#222;display:flex;align-items:center;justify-content:center;overflow:hidden;
   /* fixed beige background */
   background-color: #f5f5dc;
+  touch-action: none; /* prevent scrolling/zooming on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 #stage{position:relative;width:100%;height:100vh}
@@ -68,11 +70,21 @@ body{
 }
 
 /* wild mode styling - make last two more visible and above others */
-.emoji.wild{z-index:9998;box-shadow:0 8px 20px rgba(0,0,0,0.18);transition:left 360ms cubic-bezier(.2,.9,.2,1), top 360ms cubic-bezier(.2,.9,.2,1)}
+.emoji.wild{z-index:9998;transition:left 160ms ease-out, top 160ms ease-out;animation:none !important}
 
 /* congrats tab (hidden by default) */
-.congrats-tab{position:fixed;left:50%;top:14px;transform:translateX(-50%) translateY(-18px);opacity:0;pointer-events:none;z-index:10000}
-.congrats-tab .congrats-inner{background:linear-gradient(90deg,#ffd966,#ff7ab6);color:#111;padding:12px 18px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.18);display:flex;align-items:center;gap:12px}
-.congrats-tab .congrats-msg{font-weight:700;font-size:15px}
-.congrats-tab .congrats-close{background:rgba(0,0,0,0.08);border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
-.congrats-tab.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;transition:transform 320ms cubic-bezier(.2,.9,.2,1),opacity 250ms}
+.congrats-tab{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.15);opacity:0;pointer-events:none;z-index:10000;transition:opacity 250ms}
+.congrats-tab .congrats-inner{background:linear-gradient(90deg,#ffd966,#ff7ab6);color:#111;padding:40px 60px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.25);display:flex;flex-direction:column;align-items:center;gap:20px;transform:scale(0.9);transition:transform 320ms cubic-bezier(.2,.9,.2,1)}
+.congrats-tab .congrats-msg{font-weight:800;font-size:32px;text-align:center}
+.congrats-tab .congrats-close{display:none} /* hide close button */
+.congrats-tab.show{opacity:1;pointer-events:auto}
+.congrats-tab.show .congrats-inner{transform:scale(1)}
+
+/* Refresh button styling */
+.refresh-btn{background:#fff;color:#333;border:none;padding:12px 24px;font-size:18px;font-weight:700;border-radius:10px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.15);transition:transform 0.1s}
+.refresh-btn:active{transform:scale(0.96)}
+
+@media (max-width: 600px) {
+  .congrats-tab .congrats-inner{padding:24px 32px;width:85%}
+  .congrats-tab .congrats-msg{font-size:24px}
+}
