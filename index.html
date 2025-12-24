@@ -9,6 +9,20 @@
 <body>
   <main id="stage" aria-label="Bouncing emojis stage"></main>
 
+  <!-- Pop counter (modern, top-left) -->
+  <div id="popCounter" class="pop-counter" aria-live="polite">
+    <div class="pop-row"><span class="label">Popped</span><span id="poppedCount" class="num">0</span></div>
+    <div class="pop-row muted"><span class="label">Remaining</span><span id="remainingCount" class="num">0</span></div>
+  </div>
+
+  <!-- Congratulatory tab shown when all emojis are popped -->
+  <div id="congratsTab" class="congrats-tab" role="status" aria-hidden="true">
+    <div class="congrats-inner">
+      <div class="congrats-msg">Bhai waah, bohot tej hai tu to!!</div>
+      <button id="congratsClose" class="congrats-close" aria-label="Close">✕</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
