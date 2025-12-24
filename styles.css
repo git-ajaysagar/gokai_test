@@ -1,0 +1,36 @@
+
+/* Simple full-screen landing with a hue-animating gradient background */
+:root{
+  --hue: 210; /* default hue */
+  --hue-speed: 6; /* degrees per second; increase for visible change */
+  --sat: 70%;
+  --light1: 22%;
+  --light2: 12%;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+/* Use the animated CSS variable --hue to build a soft gradient */
+body{
+  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#222;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  /* fixed beige background */
+  background-color: #f5f5dc;
+}
+
+#stage{position:relative;width:100%;height:100vh}
+
+.emoji{position:absolute;display:inline-block;user-select:none;pointer-events:auto;will-change:transform,opacity;animation-name:bounce;animation-timing-function:cubic-bezier(.22,.9,.3,1);animation-iteration-count:infinite}
+
+@keyframes bounce{
+  0%{transform:translateY(0) scale(1);opacity:1}
+  50%{transform:translateY(-30px) scale(1.08);opacity:0.95}
+  100%{transform:translateY(0) scale(1);opacity:1}
+}
+
+.hint{position:fixed;left:12px;bottom:12px;font-size:13px;opacity:0.8}
+
+@media (prefers-reduced-motion: reduce) {
+  .emoji { animation-iteration-count: 1; animation-duration: 0.001s; }
+}
