@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
       el.style.left = nx + 'px'
       el.style.top = ny + 'px'
-    }, 360) // 160ms transition + 300ms wait
+    }, 350) // 160ms transition + 300ms wait
 
     wildHandles.set(el, interval)
   }
